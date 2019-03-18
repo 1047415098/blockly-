@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<script src="./blockly-master/blockly_compressed.js"></script>	<!-- Blockly脚本 -->
+  	<script src="./blockly-master/blocks_compressed.js"></script>	<!--Blockly核心 -->
+  	<script src="./blockly-master/msg/js/en.js"></script>
+  	<script src="./blockly-master/python_compressed.js"></script>
+	<style>
+		q{
+			background-color: red !important;
+		}
+
+	    body {
+	      background-color: #fff;
+	      font-family: sans-serif;
+	    }
+	    h1 {
+	      font-weight: normal;
+	      font-size: 140%;
+	    }
+	    #blocklyDiv{
+	    	height: 800px;
+	    	width: 100%;
+	    }
+	    .blocklySvg{
+	    	background:#000!important;
+
+	    	background:url("https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=2741202278,3965783257&fm=27&gp=0.jpg");
+
+	    }
+	    button{
+	    	width: 100px;
+	    	height: 50px;
+	    	background-color: #eee;
+	    	border:none;
+	    	box-shadow: 3px 3px 0 0 #ccc;
+	    }
+
+	    .header{
+	    	width: 100px;
+	    	z-index: 1000;
+	    }
+	    .blocklyFlyout{
+	    	/*display: none;*/
+	   	}
+	   	.blocklyFlyout .blocklyFlyoutBackground{
+	   		fill: rgba(63,63,63,0.)!important;
+	   	}
+
+	   	#blocklyArea{
+	   		height: 99%;
+	      	background: #fc9;
+	      	text-align: center;
+	   	}
+	</style>
+</head>
+<body>  
+
+	<p>
+		<button onclick="showCode()">Show Code</button>
+		<button onclick="shouView()">Show View</button>
+	</p>
+
+	<!-- <div class="header">
+		<span id="con_element">元素</span>
+		<div style="display:none;" id="con_div">
+			<p>超人</p>
+			<p>龙珠</p>
+			<p>傻逼</p>
+		</div>
+	</div> -->
+
+	<div id="blocklyDiv"></div>
+
+	<xml id="toolbox" style="display:none;">
+
+		<category name="colos" colour="200">
+		    <block type="controls_if"></block>
+		    <block type="controls_whileUntil"></block>
+		    <block type="controls_for"></block>
+		</category>
+
+		<category name="逻辑" colour="150">
+		    <block type="controls_if"></block>
+		    <block type="logic_compare"></block>
+		    <block type="controls_repeat_ext"></block>
+		    <block type="math_number"></block>
+		    <block type="math_arithmetic"></block>
+		    <block type="text"></block>
+		    <block type="text_print"></block>
+		    <block type="lists_setIndex" inline="false"></block>
+		</category>
+		
+		<category name="自己定义的块">
+		    <block type="controls_repeat_ext_daluji"></block> 	<!-- 自己定义的块 -->
+		</category>
+
+
+		
+	</xml>
+
+	<xml id="startBlocks" style="display: none">
+	    <block type="controls_if" inline="false" x="120" y="20">
+	      <mutation else="1"></mutation>
+	      <value name="IF0">
+	        <block type="logic_compare" inline="true">
+	          <field name="OP">EQ</field>
+	          <value name="A">
+
+	            <block type="math_arithmetic" inline="true">
+	              <field name="OP">MULTIPLY</field>
+	              <value name="A">
+
+	                <block type="math_number">
+	                  <field name="NUM">6</field>
+	                </block>
+
+	              </value>
+	              <value name="B">
+	                <block type="math_number">
+	                  <field name="NUM">7</field>
+	                </block>
+	              </value>
+	            </block>
+
+	          </value>
+
+	          <value name="B">
+	            <block type="math_number">
+	              <field name="NUM">42</field>
+	            </block>
+	          </value>
+	          
+	        </block>
+	      </value>
+
+	      <statement name="DO0">
+	        <block type="text_print" inline="false">
+	          <value name="TEXT">
+	            <block type="text">
+	              <field name="TEXT">Don't panic</field>
+	            </block>
+	          </value>
+	        </block>
+	      </statement>
+
+	      <statement name="ELSE">
+	        <block type="text_print" inline="false">
+	          <value name="TEXT">
+	            <block type="text">
+	              <field name="TEXT">Panic</field>
+	            </block>
+	          </value>
+	        </block>
+	      </statement>
+
+	    </block>
+	</xml>
+
+
+
+<!-- 	<xml id="toolbox" style="display: none">
+	  <category name="控制" colour="200">
+	    <block type="controls_if"></block>
+	    <block type="controls_whileUntil"></block>
+	    <block type="controls_for">
+	  </category>
+	  
+	  <category name="逻辑">
+	    <block type="logic_compare"></block>
+	    <block type="logic_operation"></block>
+	    <block type="logic_boolean"></block>
+	  </category>
+
+	  <category name="Logic" colour="210">...</category>
+	  <category name="Loops" colour="120">...</category>
+	  <category name="Math" colour="230">...</category>
+	  <category name="Colour" colour="20">...</category>
+	  <category name="Variables" colour="330" custom="VARIABLE"></category>
+	  <category name="Functions" colour="290" custom="PROCEDURE"></category>
+	</xml>
+
+ -->	
+
+	<textarea id="text" style="margin: 0px; width: 200px; height: 152px;display:none;" >
+	</textarea>
+
+<!-- 手动js创建块元素
+<script>
+	(function() {
+		
+  var toolbox = '<xml>';
+  toolbox += '  <block type="controls_if"></block>';
+  toolbox += '  <block type="controls_whileUntil"></block>';
+  toolbox += '</xml>';
+  var workspace = Blockly.inject('blocklyDiv', {toolbox: toolbox});
+  console.log(workspace);
+	})();
+</script> -->
+
+
+	<script>
+	Blockly.Msg.EVERYTHING_HUE = 42;	//声明一个变量这样
+
+
+	//start 自定义的 块
+	Blockly.Blocks['controls_repeat_ext_daluji'] = {
+	  /**
+	   * Block for repeat n times (external number).
+	   * @this Blockly.Block
+	   */
+	  init: function() {
+	    this.jsonInit({
+	      "message0": Blockly.Msg.CONTROLS_REPEAT_TITLE,
+	      "args0": [
+	        {
+	          "type": "input_value",
+	          "name": "TIMESa",
+	          "check": "Number"
+	        }
+	      ],
+	      "previousStatement": null,
+	      "nextStatement": null,
+	      "colour": Blockly.Blocks.loops.HUE,
+	      // "tooltip": Blockly.Msg.CONTROLS_REPEAT_TOOLTIP,
+	      // "helpUrl": Blockly.Msg.CONTROLS_REPEAT_HELPURL
+	    });
+	    this.appendStatementInput('DO').appendField(Blockly.Msg.CONTROLS_REPEAT_INPUT_DO);
+	  }
+	};
+	Blockly.Python['controls_repeat_ext_daluji'] = function(block) {
+		return 'for count in range(0):pass';
+	}
+	//end 自定义的块
+
+
+	//start 配置
+    var workspace = Blockly.inject('blocklyDiv',
+        {
+        	media: './blockly-master/media/',
+         	toolbox: document.getElementById('toolbox'),
+         	sounds: false,	//关闭声音
+         	collapse:true,
+         	trashcan:true,	//垃圾桶
+         	maxTrashcanContents:20,	//垃圾数量
+         	scrollbars:true,	//滚动条
+         	grid:{				//网格
+         		spacing: 20,
+	        	length: 1,
+	          	colour: '#ccc',
+	          	snap: true},
+         	zoom:
+	        {
+	         	controls: true,
+		        wheel: false,	//滚动监听，放大
+		        startScale: 1.0,
+		        maxScale: 3,
+		        minScale: 0.3,
+		        scaleSpeed: 1.2
+		    }
+	     // trashcan: true});
+     	});
+	//end 配置
+    
+    
+    Blockly.Xml.domToWorkspace(document.getElementById('startBlocks'),workspace);	//先定义呈现在界面上
+
+
+    function myUpdateFunction(event) {
+	  var code = Blockly.Python.workspaceToCode(workspace);
+	  console.info(code)
+	}
+	workspace.addChangeListener(myUpdateFunction);
+
+    //显示代码
+    var t_box = document.getElementById('blocklyDiv');
+	var text = document.getElementById('text');
+    
+    function showCode() {
+    	var code = Blockly.Python.workspaceToCode(workspace);
+
+    	t_box.style.display="none";
+
+    	if (text.style.display=="none") {
+	    	text.style.display="block";
+    	}else if (text.style.display=="block") {
+    		text.style.display="none";
+    	}
+
+	    text.innerHTML=code;
+
+    	// t_box.innerHTML='<code>'+ code +'</code>';
+    	// document.write('<h1> '+ code +' </h1>');
+    	
+    	
+    	// t_box.innerHTML=code;
+
+    	// if (t_box.style.display) {
+    	// 	t_box.style.display="none";
+    	// }else{
+    	// 	t_box.innerHTML='<code>'+ code +'</code>';
+    	// }
+    	
+    	console.log(code);
+    }
+
+    //显示视图
+    function shouView(){
+    	t_box.style.display="block";
+    	text.style.display="none";
+
+    	return true;
+    }
+
+
+
+    </script>
+
+	<script type="text/javascript">
+	  	
+	  	var add =document.getElementById("toolbox");
+	  	var svg =document.getElementsByClassName("blocklySvg");
+
+	  	// svg.classList.add("q");
+	  	// var 
+	  	// console.log(add)
+	  	// add.childNodes
+	  	// .classList.add('q');
+	  	// console.log(add.innerHTML);
+	  	// add.style.backgroundColor="#000";
+
+
+
+
+
+
+	  	//标题点击切换
+	  	var con_element =document.getElementById('con_element');
+	  	var con_div =document.getElementById('con_div');
+
+	  	con_element.addEventListener('click',function(){
+	  		// console.log(con_div);
+		    if(con_div.style.display=="none"){
+		    	con_div.style.display="block";
+		    }else if (con_div.style.display=="block"){
+		    	con_div.style.display="none";
+		    }
+		    // con_div.childNodes.style.display="none";
+		},false);
+
+
+
+	  	// 块 切换显示
+	  	var superMe = document.getElementById('con_div'); 
+	  	var toolbox = document.getElementById('toolbox'); 
+	  	// var blocklyWorkspace = document.getElementsByClassName("blocklyWorkspace");
+	  	var blocklyFlyout = document.getElementsByClassName("blocklyFlyout");
+	  	
+	  	superMe.onclick=function(){
+	  		// console.log(blocklyWorkspace);
+	  		// blocklyWorkspace[1].style.display="none";
+	  		console.log(blocklyFlyout);
+
+	  		if (blocklyFlyout[0].style.display == "none") {
+	  			blocklyFlyout[0].style.display = "block";
+	  		}else if (blocklyFlyout[0].style.display == "block"){
+	  			blocklyFlyout[0].style.display = "none"
+	  		}
+
+	  	}
+
+
+
+	</script>
+</body>
+</html>
